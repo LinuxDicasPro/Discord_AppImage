@@ -24,16 +24,16 @@ printf "Search latest version: "
 
 ########
 
-version="$(grep -Eom1 "([0-9]+[.])+[0-9]+" <(grep "discord" <(links -dump "$link")))"
+VERSION=${VERSION:-"$(grep -Eom1 "([0-9]+[.])+[0-9]+" <(grep "discord" <(links -dump "$link")))"}
 
 ########
 
 
-printf "\033[1;32m$version\033[m\n"
+printf "\033[1;32m$VERSION\033[m\n"
 for i in {1..35}; { printf '─'; }; printf "\n"
 
 
-test -z "$version" && {
+test -z "$VERSION" && {
     echo "update script. version not found!"
     exit 1
 }
@@ -44,7 +44,7 @@ test ! -e $destdir && mkdir -p $destdir
 cd $destdir
 
 
-test -e "$prg-$version-$arch.AppImage" && {
+test -e "$prg-$VERSION-$arch.AppImage" && {
     echo "appimage found!"
     exit 0
 }
@@ -59,7 +59,7 @@ test ! -e "appimagetool-x86_64.AppImage" && {
 
 #########
 
-link_prg="https://stable.dl2.discordapp.net/apps/linux/$version/discord-$version.tar.gz"
+link_prg="https://stable.dl2.discordapp.net/apps/linux/$VERSION/discord-$VERSION.tar.gz"
 
 #########
 
@@ -131,12 +131,12 @@ cd ..
 printf "\n"; for ((i=0; i<$COLUMNS; i++)); { printf '─'; }; echo -e "\n"
 
 env ARCH=$arch ./appimagetool-x86_64.AppImage "$prg.AppDir"
-mv "${appimage_name// /_}-$arch.AppImage" "$prg-$version-$arch.AppImage"
+mv "${appimage_name// /_}-$arch.AppImage" "$prg-$VERSION-$arch.AppImage" || true
 
 printf "\n"; for ((i=0; i<$COLUMNS; i++)); { printf '─'; }; echo -e "\n"
 
 rm -rf "$prg.AppDir"
 cd ..
 
-echo "appimage saved in $destdir/$prg-$version-$arch.AppImage"
+echo "appimage saved in $destdir/$prg-$VERSION-$arch.AppImage"
 exit 0
